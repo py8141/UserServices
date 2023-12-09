@@ -1,0 +1,15 @@
+#server:
+#  port: 8085
+#
+#spring:
+#  application:
+#    name: CART-ORDER-SERVICE
+#
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    fetch-registry: true
+#    register-with-eureka: true
+#    service-url:
+#      defaultZone: http://10.20.3.178:8761/eureka
