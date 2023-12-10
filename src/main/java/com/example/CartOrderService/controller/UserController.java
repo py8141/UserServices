@@ -49,10 +49,11 @@ public class UserController {
   }
 
   @GetMapping("/getUserFollowers")
-    ResponseEntity<List<String >> getUserFollowers(@RequestParam String userId){
+    ResponseEntity<List<String>> getUserFollowers(@RequestParam String userId){
 
       List<String> followerList = new ArrayList<>();
       followerList = userService.getListOfFollowingByUserId(userId);
+//      System.out.println(followerList);
        if(!followerList.isEmpty()){
            return new ResponseEntity<>(followerList,HttpStatus.ACCEPTED);
        }

@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -28,12 +29,12 @@ public class UserDetails
     String profilePicUrl;
 
     String accountType;
-
     String  visibilty;
-    List<String> followers;
-    List<String> following;
-    List<String> interest;
-    List<Requests> requestsSent;
-    List<Requests> requestsReceived;
+
+    List<String> followers = new ArrayList<>();
+    List<String> following = new ArrayList<>();
+    List<String> interest = new ArrayList<>();
+    List<Requests> requestsSent = new ArrayList<>();
+    List<Requests> requestsReceived = new ArrayList<>();
 
 }

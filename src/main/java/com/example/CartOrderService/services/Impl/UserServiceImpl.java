@@ -66,6 +66,7 @@ public class UserServiceImpl implements UserService {
         UserDetails userDetails = userRepositry.findById(userId).orElse(null);
         if(userDetails!=null){
             List<String> followers = userDetails.getFollowers();
+//            System.out.println(followers);
             return followers;
         }
         return new ArrayList<>();
@@ -135,7 +136,7 @@ public class UserServiceImpl implements UserService {
                       followers.add(userTobeadded.getUserId());
                       userDetails.setFollowers(followers);
                   }
-                  if(userTobeadded.getFollowers()!=null)
+                  if(userTobeadded.getFollowing()!=null)
                   userTobeadded.getFollowing().add(userId);
                   else{
                       List<String> following = new ArrayList<>();
