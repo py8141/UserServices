@@ -7,23 +7,12 @@ import lombok.Data;
 @Data
 @ApiModel
 public class UserRequestDto {
-    String userId;
+    String userEmail;
     String userName;
     String name;
     String bio;
     String profilePic;
-    @ApiModelProperty
-    UserAccountType accountType;
-    @ApiModelProperty
-    Visibilty visibilty;
+    String accountType;
+    String visibilty;
 }
-@ApiModel
-enum UserAccountType{
-    BUSINESS,
-    NORMAL
-}
-@ApiModel
-enum Visibilty{
-    PRIVATE,
-    PUBLIC
-}
+

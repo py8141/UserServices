@@ -37,9 +37,10 @@ public class UserController {
   }
 
   @PostMapping("/addUserDetails")
-  ResponseEntity<Boolean> addUserDetails(@RequestBody UserRequestDto userRequestDto){
+  ResponseEntity<Boolean> addUserDetails(@RequestParam String userId,@RequestBody UserRequestDto userRequestDto){
 
-      Boolean isAdded = userService.addUser(userRequestDto);
+      Boolean isAdded = userService.addUser(userId,userRequestDto);
+
 
       if(isAdded)
           return new ResponseEntity<>(true,HttpStatus.ACCEPTED);
@@ -82,11 +83,9 @@ public class UserController {
           return new ResponseEntity<>(requestsList,HttpStatus.BAD_REQUEST);
 
    }
-
-    @GetMapping("/acceptRequest")
+    @PostMapping("/acceptRequest")
     ResponseEntity<Boolean> acceptRequest(@RequestParam String userId, @RequestBody Requests requests){
-
-         Boolean isAccepted = userService.acceptRequest(userId,requests);
+      Boolean isAccepted = userService.acceptRequest(userId,requests);
          if(isAccepted)
              return  new ResponseEntity<>(true,HttpStatus.ACCEPTED);
          else

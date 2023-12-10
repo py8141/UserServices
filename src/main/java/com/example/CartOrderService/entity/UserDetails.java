@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.bouncycastle.cert.ocsp.Req;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
@@ -20,28 +21,19 @@ public class UserDetails
     @MongoId
     String userId;
     String userEmail;
+    @Indexed(unique = true)
     String userName;
     String name;
     String bio;
     String profilePicUrl;
-    @ApiModelProperty
-    UserAccountType accountType;
-    @ApiModelProperty
-    Visibilty visibilty;
+
+    String accountType;
+
+    String  visibilty;
     List<String> followers;
     List<String> following;
     List<String> interest;
     List<Requests> requestsSent;
     List<Requests> requestsReceived;
 
-}
-@ApiModel
-enum UserAccountType{
-    BUSINESS,
-    NORMAL
-}
-@ApiModel
-enum Visibilty{
-    PRIVATE,
-    PUBLIC
 }

@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class UserResponseDto {
-    String profilePicUrl;
+    String profilePic;
     String name;
     List<String> followers;
     List<String> following;

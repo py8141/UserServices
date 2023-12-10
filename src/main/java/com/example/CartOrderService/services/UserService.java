@@ -12,10 +12,11 @@ import java.util.List;
 
 public interface UserService {
 
-Boolean addUser(UserRequestDto userRequestDto);
+Boolean addUser(String userId,UserRequestDto userRequestDto);
 UserResponseDto getUserDetailsByUserId(String userId);
 List<String> getListOfFollowingByUserId(String userId);
 Boolean sendRequest(String senderUserId, RequestDto requestDto);
 List<Requests> getReceviedRequests(String userId);
 Boolean acceptRequest(String userId,Requests request);
+
 }

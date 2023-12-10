@@ -1,10 +1,12 @@
 package com.example.CartOrderService.services.Impl;
 
 import com.example.CartOrderService.dto.RequestDto;
+import com.example.CartOrderService.dto.UserFeignDto;
 import com.example.CartOrderService.dto.UserRequestDto;
 import com.example.CartOrderService.dto.UserResponseDto;
 import com.example.CartOrderService.entity.Requests;
 import com.example.CartOrderService.entity.UserDetails;
+import com.example.CartOrderService.feignClient.UserFeign;
 import com.example.CartOrderService.repositry.UserRepositry;
 import com.example.CartOrderService.services.UserService;
 import org.springframework.beans.BeanUtils;
@@ -21,17 +23,29 @@ public class UserServiceImpl implements UserService {
    @Autowired
     UserRepositry userRepositry;
 
+   @Autowired
+    UserFeign userFeign;
     @Override
-    public Boolean addUser(UserRequestDto userRequestDto) {
-
+    public Boolean addUser(String userId, UserRequestDto userRequestDto) {
         UserDetails userDetails = new UserDetails();
 
-        if(userRequestDto!=null){
-            BeanUtils.copyProperties(userRequestDto,userDetails);
-            userRepositry.save(userDetails);
-            return true;
+        Boolean existsByUserName = userRepositry.existsByUserName(userRequestDto.getUserName());
+        if(existsByUserName){
+            return false;
         }
-     return false;
+       else{
+            if(userRequestDto!=null){
+                BeanUtils.copyProperties(userRequestDto,userDetails);
+                userRepositry.save(userDetails);
+                UserFeignDto userFeignDto = new UserFeignDto();
+             BeanUtils.copyProperties(userDetails,userFeignDto);
+                userFeign.sendUserDetailsSolar(userFeignDto);
+                return true;
+            }
+            else
+                return false;
+        }
+
     }
 
     @Override
@@ -71,8 +85,22 @@ public class UserServiceImpl implements UserService {
           if(senderDetails!=null && recevierDetails!=null){
               Requests sendRequest = new Requests();
               BeanUtils.copyProperties(requestDto,sendRequest);
-              senderDetails.getRequestsSent().add(sendRequest);
-              recevierDetails.getRequestsReceived().add(receviedRequest);
+              if(senderDetails.getRequestsSent()==null){
+                  List<Requests> requests = new ArrayList<>();
+                  requests.add(sendRequest);
+                  senderDetails.setRequestsSent(requests);
+              }
+              else{
+                  senderDetails.getRequestsSent().add(sendRequest);
+              }
+              if(recevierDetails.getRequestsSent()==null){
+                  List<Requests> requests = new ArrayList<>();
+                  requests.add(receviedRequest);
+                  recevierDetails.setRequestsReceived(requests);
+              }
+              else{
+                  recevierDetails.getRequestsSent().add(receviedRequest);
+              }
               userRepositry.save(senderDetails);
               userRepositry.save(recevierDetails);
               return true;
@@ -100,12 +128,38 @@ public class UserServiceImpl implements UserService {
         sendRequest.setUserName(userDetails.getUserName());
         sendRequest.setUserId(userId);
         if(userDetails!=null && userTobeadded!=null){
+                  if(userDetails.getFollowers()!=null)
                   userDetails.getFollowers().add(userTobeadded.getUserId());
+                  else{
+                      List<String> followers = new ArrayList<>();
+                      followers.add(userTobeadded.getUserId());
+                      userDetails.setFollowers(followers);
+                  }
+                  if(userTobeadded.getFollowers()!=null)
                   userTobeadded.getFollowing().add(userId);
-                  userDetails.getRequestsReceived().remove(request);
-                  userTobeadded.getRequestsSent().remove(sendRequest);
+                  else{
+                      List<String> following = new ArrayList<>();
+                      following.add(userId);
+                      userTobeadded.setFollowing(following);
+                  }
+                 List<Requests> receviedRequests = userDetails.getRequestsReceived();
+                  for(Requests requestsInFor : receviedRequests){
+                    if(requestsInFor.getUserId().equals(request.getUserId())){
+                        receviedRequests.remove(requestsInFor);
+                        break;
+                    }
+                  }
+            List<Requests> sentRequests = userTobeadded.getRequestsSent();
+                  for(Requests requestsInFor : sentRequests){
+                if(requestsInFor.getUserId().equals(sendRequest.getUserId())){
+                    sentRequests.remove(requestsInFor);
+                    break;
+                    }
+            }
+                userDetails.setRequestsReceived(receviedRequests);
+                userTobeadded.setRequestsSent(sentRequests);
                   userRepositry.save(userDetails);
-                   userRepositry.save(userTobeadded);
+                  userRepositry.save(userTobeadded);
                 return true;
         }
        return  false;
