@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@RequestMapping("/users")
+@RequestMapping("/insta/users")
 public class UserController {
 
   @Autowired
